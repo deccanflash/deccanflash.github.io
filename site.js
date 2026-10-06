@@ -16,8 +16,8 @@ const RANKS=[
   r:[["India",37.6],["China",11.8],["Indonesia",9.3],["Ecuador",7.6],["Brazil",7.0]]},
  {pos:1,t:"Population",u:"2026 estimate, crore people",src:"UN World Population Prospects 2024",url:"https://population.un.org/wpp/",fmt:v=>v.toFixed(1)+" cr",
   r:[["India",147.7],["China",141.3],["USA",34.9],["Indonesia",28.8],["Pakistan",25.9]]},
- {pos:4,t:"Size of the economy",u:"Nominal GDP 2025, US$ trillion",src:"IMF World Economic Outlook, Apr 2025",url:"https://www.imf.org/en/Publications/WEO",fmt:v=>"$"+v.toFixed(2)+"T",
-  r:[["USA",30.51],["China",19.23],["Germany",4.74],["India",4.187],["Japan",4.186]]},
+ {pos:6,t:"Size of the economy",u:"Nominal GDP 2025, US$ trillion",src:"IMF World Economic Outlook, Apr 2026",url:"https://www.imf.org/en/Publications/WEO",fmt:v=>"$"+v.toFixed(2)+"T",
+  r:[["USA",30.77],["China",19.63],["Germany",5.05],["Japan",4.44],["UK",4.00],["India",3.92]]},
  {pos:2,t:"Crude steel production",u:"2025, million tonnes",src:"worldsteel Association",url:"https://worldsteel.org/",fmt:v=>v.toFixed(1)+" Mt",
   r:[["China",960.8],["India",164.9],["USA",82.0],["Japan",80.7],["Russia",67.8]]},
  {pos:3,t:"Vehicle sales",u:"2025, million vehicles",src:"OICA",url:"https://oica.net/",fmt:v=>v.toFixed(2)+"M",
@@ -27,7 +27,7 @@ const RANKS=[
  {pos:1,t:"Feature films made in a year",u:"Guinness World Records (2013 count, latest verified)",src:"Guinness World Records",url:"https://www.guinnessworldrecords.com/world-records/largest-annual-film-output",fmt:v=>Math.round(v).toLocaleString("en-IN"),
   r:[["India",1724],["Nigeria (approx.)",1000],["USA",738]]},
 ];
-const GDP=[[1990,.321],[1991,.27],[1992,.288],[1993,.279],[1994,.327],[1995,.36],[1996,.393],[1997,.416],[1998,.421],[1999,.459],[2000,.468],[2001,.485],[2002,.515],[2003,.608],[2004,.709],[2005,.82],[2006,.94],[2007,1.217],[2008,1.199],[2009,1.342],[2010,1.676],[2011,1.823],[2012,1.828],[2013,1.857],[2014,2.039],[2015,2.104],[2016,2.295],[2017,2.651],[2018,2.703],[2019,2.836],[2020,2.675],[2021,3.167],[2022,3.353],[2023,3.55],[2024,3.91],[2025,4.187]];
+const GDP=[[1990,.321],[1991,.27],[1992,.288],[1993,.279],[1994,.327],[1995,.36],[1996,.393],[1997,.416],[1998,.421],[1999,.459],[2000,.468],[2001,.485],[2002,.515],[2003,.608],[2004,.709],[2005,.82],[2006,.94],[2007,1.217],[2008,1.199],[2009,1.342],[2010,1.676],[2011,1.823],[2012,1.828],[2013,1.857],[2014,2.039],[2015,2.104],[2016,2.295],[2017,2.651],[2018,2.703],[2019,2.836],[2020,2.675],[2021,3.167],[2022,3.353],[2023,3.55],[2025,3.916]];
 const GOLDP={1964:63,1965:72,1966:84,1967:102,1968:162,1969:176,1970:184,1971:193,1972:202,1973:278,1974:506,1975:540,1976:432,1977:486,1978:685,1979:937,1980:1330,1981:1800,1982:1645,1983:1800,1984:1970,1985:2130,1986:2140,1987:2570,1988:3130,1989:3140,1990:3200,1991:3466,1992:4334,1993:4140,1994:4598,1995:4680,1996:5160,1997:4725,1998:4045,1999:4234,2000:4400,2001:4300,2002:4990,2003:5600,2004:5850,2005:7000,2006:8400,2007:9428,2008:12361,2009:15417,2010:18448,2011:24130,2012:29926,2013:28848,2014:27708,2015:26671,2016:30128,2017:29174,2018:30692,2019:35154,2020:47562,2021:47437,2022:51249,2023:58836,2024:77000,2025:135880};
 const GOLD=Object.entries(GOLDP).map(([y,v])=>[+y,v]); GOLD.push([2026.76,147785]);
 const REPO=[[2008.58,9.0],[2009.3,4.75],[2011.8,8.5],[2013.1,7.75],[2014.08,8.0],[2015.75,6.75],[2016.8,6.25],[2017.6,6.0],[2018.6,6.5],[2019.8,5.15],[2020.4,4.0],[2022.35,4.4],[2022.95,6.25],[2023.1,6.5],[2025.1,6.25],[2025.45,5.5],[2025.93,5.25],[2026.76,5.25]];
@@ -69,7 +69,29 @@ function renderBoard(el,list){el.innerHTML=list.map(R=>{const mx=Math.max(...R.r
 function renderKpis(el){el.innerHTML=KPIS.map(k=>`<div class="kpi"><span class="k">${k.k}</span><span class="v">${k.v}</span><span class="n">${k.n}</span><span class="chip${k.red?" red":""}">${k.c}</span></div>`).join("")}
 const W0=el=>Math.max(360,Math.min(1100,Math.round(el.clientWidth)||460));
 const CH={
- gdp:el=>line(el,GDP,{w:W0(el),h:300,ymax:4.5,yt:[0,1,2,3,4],yf:t=>"$"+t+"T",xt:[1990,1995,2000,2005,2010,2015,2020,2025],vf:v=>"$"+v.toFixed(2)+"T",lf:x=>x,aria:"India GDP rising from 0.32 to 4.19 trillion dollars, 1990 to 2025",notes:[[1991,.27,"1991 crisis","r"],[2007,1.217,"$1T (2007)","l"],[2020,2.675,"COVID dip","r"]]}),
+ gdp:el=>line(el,GDP,{w:W0(el),h:300,ymax:4.5,yt:[0,1,2,3,4],yf:t=>"$"+t+"T",xt:[1990,1995,2000,2005,2010,2015,2020,2025],vf:v=>"$"+v.toFixed(2)+"T",lf:x=>x,aria:"India GDP rising from 0.32 to 3.92 trillion dollars, 1990 to 2025",notes:[[1991,.27,"1991 crisis","r"],[2007,1.217,"$1T (2007)","l"],[2020,2.675,"COVID dip","r"]]}),
  gold:(el,w)=>line(el,GOLD,{w:W0(el),h:280,ymax:160000,yt:[0,40000,80000,120000,160000],yf:t=>t?"₹"+t/1000+"k":"0",xt:[1970,1990,2010,2026],vf:inr,lf:x=>x>2026?"5 Oct 2026":x,aria:"Gold price in India rising from 63 to 1,47,785 rupees per 10 grams",notes:[[1991,3466,"1991","l"],[2020,47562,"COVID rush","l"]]}),
  repo:(el,w)=>line(el,REPO,{w:W0(el),h:280,step:true,ymin:3,ymax:10,yt:[4,6,8,10],yf:t=>t+"%",xt:[2010,2015,2020,2025],vf:v=>v.toFixed(2)+"%",lf:x=>{const y=Math.floor(x),m=Math.round((x-y)*12);return ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][Math.min(11,m)]+" "+y},aria:"RBI repo rate from 9% in 2008 to 5.25% in 2026",notes:[[2020.4,4.0,"4% COVID low","r"]]})
 };
+
+/* ---- horizontal bar chart (diverging-aware) ---- */
+function hbar(el,data,o){o=o||{};
+ const vals=data.map(d=>d[1]),mx=Math.max(0,...vals),mn=Math.min(0,...vals),span=(mx-mn)||1;
+ const pad=o.labelPad??16; /* % of width reserved for value labels */
+ const scale=v=>(v-mn)/span*(100-pad);
+ const z=scale(0);
+ el.classList.add("hb");
+ el.innerHTML=data.map(([n,v,meta])=>{const a=scale(Math.min(0,v)),b=scale(Math.max(0,v));
+  const cls=v<0?"neg":(o.diverging?"pos":"");const lab=o.fmt?o.fmt(v):v;
+  const vp=v<0?`left:calc(${z}% + 6px)`:`left:calc(${b}% + 6px)`;
+  return `<div class="hb-row${o.hl&&o.hl(n)?" in":""}" title="${n}: ${lab}${meta?" · "+meta:""}"><span class="nm">${n}</span><span class="hb-plot">${mn<0?`<i class="hb-zero" style="left:${z}%"></i>`:""}<i class="hb-bar ${cls}" style="left:${a}%;width:${Math.max(.6,b-a)}%"></i><span class="hb-val" style="${vp}">${lab}</span></span></div>`}).join("");
+}
+function sortable(btns,el,data,o){const go=m=>{const d=[...data];if(m==="desc")d.sort((a,b)=>b[1]-a[1]);if(m==="asc")d.sort((a,b)=>a[1]-b[1]);hbar(el,d,o);btns.forEach(b=>b.setAttribute("aria-pressed",b.dataset.sort===m))};
+ btns.forEach(b=>b.addEventListener("click",()=>go(b.dataset.sort)));go("desc")}
+const pct=v=>(v>0?"+":"")+v.toFixed(1)+"%";
+
+/* 2025 India markets (calendar year, price return) */
+const SECTORS25=[["PSU Bank",27.67],["Metal",24.02],["Auto",21.86],["Financial Services",17.11],["Bank",16.49],["Commodities",15.01],["MNC",8.81],["Consumption",7.96],["Services",7.95],["CPSE",4.08],["PSE",2.32],["Energy",0.13],["Pharma",-2.14],["FMCG",-2.81],["IT",-9.71],["Realty",-16.10],["Media",-22.16]];
+const ASSETS25=[["Silver",122],["Gold",72],["Nifty 50",10.5],["Sensex",9.1],["Nifty 500",6.29],["Nifty Midcap 150",5.09],["Nifty Smallcap 250",-7.22]];
+/* IMF WEO Apr 2026: nominal GDP 2025, US$ billion */
+const WGDP25=[["United States",30767.08],["China",19626.25],["Germany",5048.06],["Japan",4435.16],["United Kingdom",4003.02],["India",3916.31],["France",3368.93],["Russia",2587.94],["Italy",2550.11],["Canada",2319.90],["Brazil",2279.92],["Spain",1903.83],["South Korea",1872.38],["Australia",1839.96],["Mexico",1832.64],["Türkiye",1597.30],["Indonesia",1445.64],["Netherlands",1332.24],["Saudi Arabia",1276.94],["Switzerland",1043.54]];

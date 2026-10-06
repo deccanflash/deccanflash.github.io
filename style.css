@@ -110,3 +110,28 @@ details p{margin:8px 0 0;color:var(--ink2)}
 .card .d{font-size:14px;color:var(--ink2)}
 .note{font-size:14px;color:var(--muted)}
 a:focus-visible,summary:focus-visible{outline:2px solid var(--flash);outline-offset:2px}
+
+/* horizontal bar dashboards */
+:root{--neg:#d62839}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--neg:#ec4155}}
+:root[data-theme="dark"]{--neg:#ec4155}
+.hb{display:flex;flex-direction:column;gap:2px;position:relative}
+.hb-row{display:grid;grid-template-columns:minmax(92px,180px) 1fr;align-items:center;gap:10px;padding:3px 4px;border-radius:4px;font-size:14.5px}
+.hb-row:hover{background:var(--grid)}
+.hb-row .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink2)}
+.hb-row.in .nm{color:var(--ink);font-weight:700}
+.hb-plot{position:relative;height:20px}
+.hb-zero{position:absolute;top:-3px;bottom:-3px;width:1px;background:var(--muted)}
+.hb-bar{position:absolute;top:3px;height:14px;background:var(--bar);border-radius:0 4px 4px 0}
+.hb-bar.neg{border-radius:4px 0 0 4px;background:var(--neg)}
+.hb-bar.pos{background:var(--flash)}
+.hb-row.in .hb-bar{background:var(--flash)}
+.hb-row.mute .hb-bar{background:var(--bar)}
+.hb-val{position:absolute;top:50%;transform:translateY(-50%);font-family:var(--data);font-size:14.5px;font-weight:600;color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums}
+.hb-tools{display:flex;gap:6px;flex-wrap:wrap}
+.hb-tools button{font:600 14px var(--data);letter-spacing:.3px;background:var(--panel);color:var(--ink2);border:1px solid var(--line);border-radius:999px;padding:4px 12px;cursor:pointer}
+.hb-tools button[aria-pressed="true"]{background:var(--flash);border-color:var(--flash);color:#fff}
+.dash{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(460px,100%),1fr));gap:16px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--ink2)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+@media (max-width:480px){.hb-row{grid-template-columns:96px 1fr;font-size:13.5px}}
