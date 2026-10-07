@@ -47,10 +47,10 @@ function line(el,data,o){
  for(const t of o.xt)g+=`<text x="${X(t)}" y="${H-6}" text-anchor="middle">${t}</text>`;
  const last=pts.at(-1),ld=data.at(-1);
  const id="g"+Math.random().toString(36).slice(2,7);
- el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${o.aria}"><defs><linearGradient id="${id}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--flash)" stop-opacity=".22"/><stop offset="1" stop-color="var(--flash)" stop-opacity="0"/></linearGradient></defs>${g}
- ${area?`<path d="${area}" fill="url(#${id})"/>`:""}<path d="${path}" fill="none" stroke="var(--flash)" stroke-width="2.25" stroke-linejoin="round"/>
- ${(o.notes||[]).map(([x,y,t,a])=>`<circle cx="${X(x)}" cy="${Y(y)}" r="4" fill="var(--panel)" stroke="var(--ink2)" stroke-width="1.5"/><text x="${X(x)+(a==="l"?-8:8)}" y="${Y(y)-8}" text-anchor="${a==="l"?"end":"start"}">${t}</text>`).join("")}
- <circle cx="${last[0]}" cy="${last[1]}" r="5.5" fill="var(--flash)" stroke="var(--panel)" stroke-width="2"/>
+ el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${o.aria}"><defs><linearGradient id="${id}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--flash)" stop-opacity=".22"/><stop offset="1" stop-color="var(--flash)" stop-opacity="0"/></linearGradient><clipPath id="${id}c"><rect class="clip" x="0" y="0" width="${W}" height="${H}"/></clipPath></defs><g class="gr">${g}</g>
+ ${area?`<path class="ar" d="${area}" fill="url(#${id})" clip-path="url(#${id}c)"/>`:""}<path class="ln" d="${path}" fill="none" stroke="var(--flash)" stroke-width="2.25" stroke-linejoin="round"/>
+ ${(o.notes||[]).map(([x,y,t,a])=>`<g class="nt" data-x="${X(x)}"><circle cx="${X(x)}" cy="${Y(y)}" r="4" fill="var(--panel)" stroke="var(--ink2)" stroke-width="1.5"/><text x="${X(x)+(a==="l"?-8:8)}" y="${Y(y)-8}" text-anchor="${a==="l"?"end":"start"}">${t}</text></g>`).join("")}
+ <circle class="end" cx="${last[0]}" cy="${last[1]}" r="5.5" fill="var(--flash)" stroke="var(--panel)" stroke-width="2"/>
  <text class="lbl" x="${last[0]-10}" y="${last[1]-12}" text-anchor="end">${o.vf(ld[1])}</text>
  <line class="cx" x1="0" x2="0" y1="${P.t}" y2="${H-P.b}" stroke="var(--muted)" stroke-dasharray="3 3" opacity="0"/><circle class="cd" r="5" fill="var(--flash)" stroke="var(--panel)" stroke-width="2" opacity="0"/>
  <rect x="${P.l}" y="0" width="${W-P.l-P.r}" height="${H}" fill="transparent"/></svg><div class="tip"></div>`;
@@ -59,6 +59,7 @@ function line(el,data,o){
   pts.forEach((p,i)=>{const d=Math.abs(p[0]-sx);if(d<bd){bd=d;bi=i}});const p=pts[bi];
   cx.setAttribute("x1",p[0]);cx.setAttribute("x2",p[0]);cx.setAttribute("opacity",1);cd.setAttribute("cx",p[0]);cd.setAttribute("cy",p[1]);cd.setAttribute("opacity",1);
   tip.textContent=o.lf(data[bi][0])+" · "+o.vf(data[bi][1]);tip.style.left=(p[0]/W*r.width)+"px";tip.style.top=(p[1]/H*r.height)+"px";tip.classList.add("on")};
+ el._line={pts,data,vf:o.vf,W,P};
  svg.addEventListener("pointermove",move);svg.addEventListener("pointerleave",()=>{tip.classList.remove("on");cx.setAttribute("opacity",0);cd.setAttribute("opacity",0)});
 }
 
@@ -86,7 +87,7 @@ function hbar(el,data,o){o=o||{};
   const vp=v<0?`left:calc(${z}% + 6px)`:`left:calc(${b}% + 6px)`;
   return `<div class="hb-row${o.hl&&o.hl(n)?" in":""}" title="${n}: ${lab}${meta?" · "+meta:""}"><span class="nm">${n}</span><span class="hb-plot">${mn<0?`<i class="hb-zero" style="left:${z}%"></i>`:""}<i class="hb-bar ${cls}" style="left:${a}%;width:${Math.max(.6,b-a)}%"></i><span class="hb-val" style="${vp}">${lab}</span></span></div>`}).join("");
 }
-function sortable(btns,el,data,o){const go=m=>{const d=[...data];if(m==="desc")d.sort((a,b)=>b[1]-a[1]);if(m==="asc")d.sort((a,b)=>a[1]-b[1]);hbar(el,d,o);btns.forEach(b=>b.setAttribute("aria-pressed",b.dataset.sort===m))};
+function sortable(btns,el,data,o){const go=m=>{const d=[...data];if(m==="desc")d.sort((a,b)=>b[1]-a[1]);if(m==="asc")d.sort((a,b)=>a[1]-b[1]);const before=window.DFM?DFM.snap(el):null;hbar(el,d,o);if(before)DFM.flip(el,before);btns.forEach(b=>b.setAttribute("aria-pressed",b.dataset.sort===m))};
  btns.forEach(b=>b.addEventListener("click",()=>go(b.dataset.sort)));go("desc")}
 const pct=v=>(v>0?"+":"")+v.toFixed(1)+"%";
 
@@ -95,3 +96,82 @@ const SECTORS25=[["PSU Bank",27.67],["Metal",24.02],["Auto",21.86],["Financial S
 const ASSETS25=[["Silver",122],["Gold",72],["Nifty 50",10.5],["Sensex",9.1],["Nifty 500",6.29],["Nifty Midcap 150",5.09],["Nifty Smallcap 250",-7.22]];
 /* IMF WEO Apr 2026: nominal GDP 2025, US$ billion */
 const WGDP25=[["United States",30767.08],["China",19626.25],["Germany",5048.06],["Japan",4435.16],["United Kingdom",4003.02],["India",3916.31],["France",3368.93],["Russia",2587.94],["Italy",2550.11],["Canada",2319.90],["Brazil",2279.92],["Spain",1903.83],["South Korea",1872.38],["Australia",1839.96],["Mexico",1832.64],["Türkiye",1597.30],["Indonesia",1445.64],["Netherlands",1332.24],["Saudi Arabia",1276.94],["Switzerland",1043.54]];
+
+
+/* ================================================================
+   Motion layer: data draws itself when it scrolls into view.
+   Lines trace with a live value dot, bars grow, numbers count up,
+   re-sorted rows glide. Off for prefers-reduced-motion.
+   ================================================================ */
+const DFM=(()=>{
+ const calm=matchMedia("(prefers-reduced-motion: reduce)").matches;
+ const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+ const tween=(dur,fn,done)=>{const t0=performance.now();const f=n=>{const t=Math.min(1,(n-t0)/dur);fn(ease(t));t<1?requestAnimationFrame(f):done&&done()};requestAnimationFrame(f)};
+ /* ---- count-up for any "₹1,47,785" / "+27.7%" / "$3.92 trillion" style text ---- */
+ const NUM=/^(.*?)([+\-−]?)(\d[\d,]*(?:\.\d+)?)(.*)$/s;
+ function count(el,dur=1400){
+  const txt=el.textContent,m=txt.match(NUM);if(!m||el.dataset.counted)return;el.dataset.counted=1;
+  const [,pre,sg,num,post]=m,v=parseFloat(num.replace(/,/g,"")),dec=(num.split(".")[1]||"").length;
+  const loc=/\d,\d\d,\d{3}/.test(num)||pre.includes("₹")?"en-IN":"en-US",comma=num.includes(",");
+  const fmt=x=>{const s=comma?x.toLocaleString(loc,{minimumFractionDigits:dec,maximumFractionDigits:dec}):x.toFixed(dec);return pre+sg+s+post};
+  el.style.fontVariantNumeric="tabular-nums";
+  tween(dur,t=>el.textContent=fmt(v*t),()=>el.textContent=txt);
+ }
+ /* ---- line chart: draw path, area wipes behind a travelling dot that shows the value ---- */
+ function drawLine(plot){
+  const L=plot._line,svg=plot.querySelector("svg");if(!L||!svg||svg.dataset.drawn)return;svg.dataset.drawn=1;
+  const ln=svg.querySelector(".ln"),clip=svg.querySelector(".clip"),end=svg.querySelector(".end"),lbl=svg.querySelector(".lbl"),nts=[...svg.querySelectorAll(".nt")];
+  const len=ln.getTotalLength(),x0=L.pts[0][0],x1=L.pts.at(-1)[0],fx=+end.getAttribute("cx"),fy=+end.getAttribute("cy"),ftxt=lbl.textContent;
+  ln.style.strokeDasharray=len;ln.style.strokeDashoffset=len;
+  svg.classList.add("drawing");
+  const valAt=x=>{const p=L.pts;let i=1;while(i<p.length-1&&p[i][0]<x)i++;const a=p[i-1],b=p[i],k=b[0]===a[0]?1:Math.max(0,Math.min(1,(x-a[0])/(b[0]-a[0])));return L.data[i-1][1]+(L.data[i][1]-L.data[i-1][1])*k};
+  tween(2200,t=>{
+   ln.style.strokeDashoffset=len*(1-t);
+   const pt=ln.getPointAtLength(len*t);
+   clip.setAttribute("width",pt.x);
+   end.setAttribute("cx",pt.x);end.setAttribute("cy",pt.y);
+   lbl.setAttribute("x",pt.x-10);lbl.setAttribute("y",pt.y-12);
+   lbl.textContent=L.vf(valAt(pt.x));
+   nts.forEach(n=>{if(pt.x>=+n.dataset.x)n.classList.add("on")});
+  },()=>{ln.style.strokeDasharray="";ln.style.strokeDashoffset="";clip.setAttribute("width",L.W);end.setAttribute("cx",fx);end.setAttribute("cy",fy);lbl.setAttribute("x",fx-10);lbl.setAttribute("y",fy-12);lbl.textContent=ftxt;nts.forEach(n=>n.classList.add("on"));svg.classList.remove("drawing");svg.classList.add("done");end.classList.add("pulse")});
+ }
+ /* ---- bars grow with a stagger; values count up beside them ---- */
+ function growBars(box){
+  if(box.dataset.grown)return;box.dataset.grown=1;
+  const bars=[...box.querySelectorAll(".fill,.hb-bar")];
+  bars.forEach((b,i)=>{b.style.setProperty("--d",(i*55)+"ms")});
+  box.classList.add("grow");
+  box.querySelectorAll(".val,.hb-val").forEach((v,i)=>setTimeout(()=>count(v,900),i*55));
+ }
+ /* ---- FLIP for re-sorting ---- */
+ const snap=el=>{const m=new Map();el.querySelectorAll(".hb-row").forEach(r=>m.set(r.querySelector(".nm").textContent,r.getBoundingClientRect().top));return m};
+ function flip(el,before){
+  el.dataset.grown=1;el.classList.add("grow");
+  if(calm)return;
+  el.querySelectorAll(".hb-row").forEach((r,i)=>{const t=before.get(r.querySelector(".nm").textContent);if(t==null)return;
+   const dy=t-r.getBoundingClientRect().top;if(!dy)return;
+   r.animate([{transform:`translateY(${dy}px)`},{transform:"none"}],{duration:650+Math.min(i,12)*18,easing:"cubic-bezier(.65,0,.35,1)"});});
+ }
+ function boot(){
+  if(calm)return;
+  document.documentElement.classList.add("motion");
+  const targets=[
+   ...document.querySelectorAll(".plot"),
+   ...document.querySelectorAll(".rank .rows,.hb"),
+   ...document.querySelectorAll(".kpi .v,.chart .big,.hero-num .big"),
+   ...document.querySelectorAll(".kpis,.card,.rank,.chart,.tbl")
+  ];
+  const run=el=>{
+   if(el.classList.contains("plot"))drawLine(el);
+   else if(el.matches(".rows,.hb"))growBars(el);
+   else if(el.matches(".v,.big"))count(el);
+   else el.classList.add("seen");
+  };
+  if(!("IntersectionObserver"in window)){targets.forEach(run);return}
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){run(e.target);io.unobserve(e.target)}}),{threshold:.25,rootMargin:"0px 0px -8% 0px"});
+  targets.forEach(el=>{if(el.matches(".kpis,.card,.rank,.chart,.tbl"))el.classList.add("rise");io.observe(el)});
+  document.querySelectorAll(".cards .card,.board .rank,.kpis .kpi").forEach((c,i)=>c.style.setProperty("--i",i%8));
+ }
+ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else setTimeout(boot,0);
+ return {snap,flip,count};
+})();
