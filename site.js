@@ -175,29 +175,3 @@ const DFM=(()=>{
  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else setTimeout(boot,0);
  return {snap,flip,count};
 })();
-
-/* ---- Neon FX: particle data-network background, perspective floor, 3D tilt ---- */
-(()=>{
- const calm=matchMedia("(prefers-reduced-motion: reduce)").matches;
- const start=()=>{
-  const floor=document.createElement("div");floor.className="df-floor";document.body.prepend(floor);
-  if(calm)return;
-  const c=document.createElement("canvas");c.id="df-fx";document.body.prepend(c);
-  const x=c.getContext("2d");let W,H,dpr=Math.min(2,devicePixelRatio||1),P=[];
-  const size=()=>{W=c.width=innerWidth*dpr;H=c.height=innerHeight*dpr;c.style.width=innerWidth+"px";c.style.height=innerHeight+"px";
-   const n=Math.round(Math.min(70,innerWidth*innerHeight/16000));P=Array.from({length:n},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.25*dpr,vy:(Math.random()-.5)*.25*dpr,r:(Math.random()*1.4+.6)*dpr,red:Math.random()<.18}))};
-  size();addEventListener("resize",size);
-  let on=true;document.addEventListener("visibilitychange",()=>{on=!document.hidden;if(on)requestAnimationFrame(tick)});
-  const L=130*dpr;
-  function tick(){if(!on)return;x.clearRect(0,0,W,H);
-   for(const p of P){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1}
-   for(let i=0;i<P.length;i++)for(let j=i+1;j<P.length;j++){const a=P[i],b=P[j],d=Math.hypot(a.x-b.x,a.y-b.y);if(d<L){x.strokeStyle=`rgba(80,140,255,${(1-d/L)*.28})`;x.lineWidth=dpr*.8;x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke()}}
-   for(const p of P){x.fillStyle=p.red?"rgba(255,70,95,.9)":"rgba(140,185,255,.95)";x.shadowColor=x.fillStyle;x.shadowBlur=8*dpr;x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fill()}
-   x.shadowBlur=0;requestAnimationFrame(tick)}
-  requestAnimationFrame(tick);
-  if(matchMedia("(hover:hover)").matches)document.querySelectorAll(".card,.kpi,.rank").forEach(el=>{el.classList.add("tilt");
-   el.addEventListener("pointermove",e=>{const r=el.getBoundingClientRect(),px=(e.clientX-r.left)/r.width-.5,py=(e.clientY-r.top)/r.height-.5;el.style.transform=`perspective(700px) rotateX(${-py*8}deg) rotateY(${px*10}deg) translateZ(6px)`});
-   el.addEventListener("pointerleave",()=>el.style.transform="")});
- };
- if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",start);else start();
-})();
