@@ -78,7 +78,7 @@ const CH={
 /* ---- horizontal bar chart (diverging-aware) ---- */
 function hbar(el,data,o){o=o||{};
  const vals=data.map(d=>d[1]),mx=Math.max(0,...vals),mn=Math.min(0,...vals),span=(mx-mn)||1;
- const pad=o.labelPad??16; /* % of width reserved for value labels */
+ const pad=o.labelPad??24; /* % of width reserved for value labels */
  const scale=v=>(v-mn)/span*(100-pad);
  const z=scale(0);
  el.classList.add("hb");
