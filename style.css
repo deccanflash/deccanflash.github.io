@@ -238,3 +238,4 @@ footer{border-top:3px solid var(--navy)}
 @media (prefers-reduced-motion:reduce){.live{animation:none}}
 header{clip-path:inset(-20px -100vmax -5px)}
 .legend span:first-child i{background:var(--navy)!important}
+html{overflow-x:hidden}
