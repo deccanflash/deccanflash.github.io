@@ -239,3 +239,4 @@ footer{border-top:3px solid var(--navy)}
 header{clip-path:inset(-20px -100vmax -5px)}
 .legend span:first-child i{background:var(--navy)!important}
 html{overflow-x:hidden}
+body{overflow-x:clip}
