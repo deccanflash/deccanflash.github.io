@@ -1,7 +1,7 @@
 
 const KPIS=[
  {k:"RBI repo rate",v:"5.50%",n:"Hiked 25 bps on 7 Oct 2026",c:"Rate hike",red:true},
- {k:"24K gold / 10g",v:"₹1,46,070",n:"21 Oct 2026 · Dhanteras 6 Nov",c:"Near record"},
+ {k:"24K gold / 10g",v:"₹1,46,070",n:"22 Oct 2026 · Dhanteras 6 Nov",c:"Near record"},
  {k:"UPI · Sept 2026",v:"2,407 cr",n:"payments worth ₹29.37 lakh cr",c:"+23% YoY"},
  {k:"GST · Sept 2026",v:"₹2.04L cr",n:"gross collection, ₹2,03,521 cr",c:"+14.7% YoY"},
  {k:"Forex reserves",v:"$726.0B",n:"week ended 9 Oct · down $8.58B",c:"World top 5",red:true},
@@ -71,7 +71,7 @@ function renderKpis(el){el.innerHTML=KPIS.map(k=>`<div class="kpi"><span class="
 const W0=el=>Math.max(360,Math.min(1100,Math.round(el.clientWidth)||460));
 const CH={
  gdp:el=>line(el,GDP,{w:W0(el),h:300,ymax:4.5,yt:[0,1,2,3,4],yf:t=>"$"+t+"T",xt:[1990,1995,2000,2005,2010,2015,2020,2025],vf:v=>"$"+v.toFixed(2)+"T",lf:x=>x,aria:"India GDP rising from 0.32 to 3.92 trillion dollars, 1990 to 2025",notes:[[1991,.27,"1991 crisis","r"],[2007,1.217,"$1T (2007)","l"],[2020,2.675,"COVID dip","r"]]}),
- gold:(el,w)=>line(el,GOLD,{w:W0(el),h:280,ymax:160000,yt:[0,40000,80000,120000,160000],yf:t=>t?"₹"+t/1000+"k":"0",xt:[1970,1990,2010,2026],vf:inr,lf:x=>x>2026?"21 Oct 2026":x,aria:"Gold price in India rising from 63 to 1,46,070 rupees per 10 grams",notes:[[1991,3466,"1991","l"],[2020,47562,"COVID rush","l"]]}),
+ gold:(el,w)=>line(el,GOLD,{w:W0(el),h:280,ymax:160000,yt:[0,40000,80000,120000,160000],yf:t=>t?"₹"+t/1000+"k":"0",xt:[1970,1990,2010,2026],vf:inr,lf:x=>x>2026?"22 Oct 2026":x,aria:"Gold price in India rising from 63 to 1,46,070 rupees per 10 grams",notes:[[1991,3466,"1991","l"],[2020,47562,"COVID rush","l"]]}),
  repo:(el,w)=>line(el,REPO,{w:W0(el),h:280,step:true,ymin:3,ymax:10,yt:[4,6,8,10],yf:t=>t+"%",xt:[2010,2015,2020,2025],vf:v=>v.toFixed(2)+"%",lf:x=>{const y=Math.floor(x),m=Math.round((x-y)*12);return ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][Math.min(11,m)]+" "+y},aria:"RBI repo rate from 9% in 2008 to 5.50% in 2026",notes:[[2020.4,4.0,"4% COVID low","r"]]})
 };
 
