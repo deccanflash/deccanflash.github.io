@@ -5,7 +5,7 @@ const KPIS=[
  {k:"UPI · Oct 2026",v:"2,547 cr",n:"payments worth ₹31.53 lakh cr",c:"+23% YoY"},
  {k:"GST · Oct 2026",v:"₹2.31L cr",n:"gross collection, ₹2,31,290 cr",c:"+22.9% YoY"},
  {k:"Forex reserves",v:"$717.1B",n:"week ended 30 Oct · down $2.69B",c:"World top 5",red:true},
- {k:"Retail inflation",v:"5.54%",n:"CPI, September 2026",c:"Rising",red:true}
+ {k:"Retail inflation",v:"6.09%",n:"CPI, October 2026 · above RBI's 6% limit",c:"24-month high",red:true}
 ];
 const RANKS=[
  {pos:1,t:"Money sent home from abroad",u:"Remittances received, 2025, US$ bn",src:"World Bank (WDI)",url:"https://data.worldbank.org/indicator/BX.TRF.PWKR.CD.DT",fmt:v=>"$"+v.toFixed(1)+"B",
